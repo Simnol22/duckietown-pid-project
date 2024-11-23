@@ -12,6 +12,9 @@ from sensor_msgs.msg import CompressedImage
 from std_msgs.msg import String
 
 from visual_lane_servoing.include import visual_servoing_solution
+from visual_lane_servoing.include import PIDController
+from visual_lane_servoing.include import lane_detection_model
+
 from duckietown.dtros import DTROS, NodeType, TopicType
 from duckietown.utils.image.ros import compressed_imgmsg_to_rgb, rgb_to_compressed_imgmsg
 
@@ -78,9 +81,6 @@ class LaneServoingNode(DTROS):
         self._rt_mask_pub = rospy.Publisher(
             f"/{self.veh}/visual_control/right_mask/image/compressed", CompressedImage, queue_size=1
         )
-
-        # Get the steering gain (omega_max) from the calibration file
-        # It defines the maximum omega used to scale normalized steering command
         kinematics_calib = self.read_params_from_calibration_file()
         self.omega_max = kinematics_calib.get("omega_max", 6.0)
 
